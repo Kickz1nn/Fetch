@@ -1,25 +1,36 @@
-window.onload = function() {
-
-    let btn = document.querySelector("button");
-    let cep = document.getElementById("cep");
-
-    btn.addEventListener("click", () => {
-        //alert("Valor: " + cep.value)
-
-        let servidor = "https://viacep.com.br/ws/" + cep.value + "/json/";
-
+window.onload = function () {
+    let cep;
+    let bt = document.querySelector("button");
+    let dados = document.querySelector("#json");
+    bt.addEventListener("click", () => {
+        cep = document.querySelector("#cep").value;
+        let servidor = `https://viacep.com.br/ws/${cep}/json`;
         console.log(servidor);
+        fetch(servidor)
+            .then((resp) => {
+                return resp.json();
+            })
+            .then((x) => {
+                
+                for (var key in x) {
+                    console.log(key, x[key])
+                }
 
-        fetch(servidor).then(
-            (resp) => { return resp.json();}
-        ).then(
-            (dados) => {;
+                // criar elementos (nó)
+                let div = document.createElement("div");
+                for (var key in x) { 
+                    // console.log(key , x[key])
+                    let p = document.createElement("p");
 
-                console.log(dados["localidade"]);
+                    let texto = document.createTextNode(`${key.toUpperCase()} : ${x[key]}`);
+                    p.appendChild(texto);
+                    div.appendChild(p);
+
+                }
+                dados.className = "border";
+                dados.append(div);
             }
-        ).catch(
-            (er) => {console.error(er);}
-        )
-    })
-
-}
+                //console.log(x['bairro'])
+            ).catch((x) => console.error(x));
+    });
+};
